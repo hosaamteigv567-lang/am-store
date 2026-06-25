@@ -1,121 +1,20 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>معرض المنتجات - fox store</title>
-    <style>
-        body { 
-            font-family: Arial, sans-serif; 
-            background-color: #f4f7f6; 
-            text-align: center; 
-            padding: 15px; 
-            margin: 0;
-        }
-        
-        /* زرار العودة للرئيسية */
-        .btn-back { 
-            background-color: #6c757d; 
-            color: white; 
-            padding: 10px 20px; 
-            border-radius: 8px; 
-            text-decoration: none; 
-            display: inline-block; 
-            margin-bottom: 25px; 
-            font-weight: bold; 
-            font-size: 14px;
-        }
-        
-        /* كارت رفع المنتجات السري */
-        .upload-card { 
-            background: white; 
-            padding: 20px; 
-            max-width: 450px; 
-            margin: 0 auto 30px auto; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-        }
-        input[type="file"] { margin: 15px 0; display: block; width: 100%; }
-        .btn-upload { background-color: #1f4e78; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        
-        /* حاوية المنتجات الشاملة */
-        .products-container { 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            gap: 15px; 
-            margin-top: 20px; 
-            padding: 5px;
-        }
-        
-        /* 📱 تصميم المنتجات على الموبايل (تكبير الصفحة وعرض قطعتين بس في السطر) */
-        .product { 
-            background: white; 
-            padding: 12px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
-            width: calc(50% - 10px); /* 50% تعني عنصرين بالظبط في السطر */
-            box-sizing: border-box;
-            text-align: center; 
-        }
-        .product img { 
-            width: 100%; 
-            height: 170px; /* طول مناسب جداً ليظهر تفاصيل المنتج */
-            border-radius: 8px; 
-            object-fit: cover; 
-        }
-        
-        /* 💻 التعديل التلقائي لو فتحت من شاشة كمبيوتر كبيرة */
-        @media (min-width: 768px) {
-            .product { 
-                width: calc(25% - 15px); /* يعرض 4 منتجات في السطر على الكمبيوتر */
-            }
-            .product img {
-                height: 220px;
-            }
-        }
-        
-        .btn-buy { 
-            background-color: #25D366; 
-            color: rgb(180, 240, 15); 
-            padding: 8px 16px; 
-            border-radius: 8px; 
-            text-decoration: none; 
-            display: inline-block; 
-            font-weight: bold; 
-            margin-top: 10px; 
-            font-size: 13px;
-        }
-    </style>
-</head>
-<body>
+<hr style="margin-top: 50px; border: 0; border-top: 1px solid #ccc;">
 
-    <!-- زرار للعودة لصفحة المتجر الرئيسية النظيفة -->
-    <a href="/" class="btn-back">⬅️ العودة لصفحة المتجر الرئيسية (fox store)</a>
-
-    <!-- 🔒 لوحة الإدارة السرية: لن يراها زبون أبداً، مخصصة لمروان فقط عبر الرابط السري -->
-    {% if admin_mode %}
-    <div class="upload-card">
-        <h3>إضافة بضاعة جديدة للمتجر 🛠️</h3>
+    <div style="background: #fff; max-width: 400px; margin: 30px auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align: right; direction: rtl;">
+        <h3 style="margin-top: 0; color: #1f4e78; text-align: center;">🔒 لوحة تحكم الإدارة (لرفع الصور)</h3>
+        
         <form action="/upload" method="POST" enctype="multipart/form-data">
-            <input type="file" name="product_images[]" multiple required>
-            <button type="submit" class="btn-upload">🚀 ارفع المنتجات الآن</button>
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px;">الرقم السري للمشرف:</label>
+            <input type="password" name="password" placeholder="اكتب الباسورد السرية هنا لفتح الرفع" required 
+                   style="padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #ccc; width: 100%; box-sizing: border-box;">
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px; font-size: 14px;">اختر الصور المراد إضافتها:</label>
+            <input type="file" name="product_images[]" multiple required 
+                   style="margin-bottom: 15px; font-size: 13px;">
+            
+            <button type="submit" style="background-color: #1f4e78; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px;">
+                🚀 بدء الرفع والتحديث الآن
+            </button>
         </form>
     </div>
-    {% endif %}
-
-    <h2>🛍️ المنتجات المتوفرة حالياً بالمعرض</h2>
-
-    <!-- عرض بضاعتك وصورك المرفوعة بالترتيب الجديد الكبير -->
-    <div class="products-container">
-        {% for image in images %}
-            <div class="product">   
-                <img src="{{ url_for('static', filename='uploads/' + image) }}">
-                <p style="font-weight: bold; margin-top: 8px; font-size: 14px; color: #333;">منتج متوفر</p>
-                <a href="https://wa.me/201210494181?text=مرحبا مروان اريد شراء منتج" class="btn-buy">Buy Now</a>
-            </div>
-        {% endfor %}
-    </div>
-
-</body>
-</html>
